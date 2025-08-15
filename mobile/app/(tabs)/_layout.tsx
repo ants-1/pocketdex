@@ -7,7 +7,6 @@ const tabIcons = {
   pokedex: { type: "MaterialCommunityIcons", name: "pokeball" },
   mydex: { type: "MaterialIcons", name: "favorite" },
   quiz: { type: "MaterialIcons", name: "quiz" },
-
 }
 
 export default function TabLayout() {
