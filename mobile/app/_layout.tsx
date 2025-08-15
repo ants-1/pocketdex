@@ -1,11 +1,17 @@
 import "../global.css";
 import { Stack } from "expo-router";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "@/lib/apolloClient";
+import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="+not-found" />
-    </Stack>
+    <ApolloProvider client={client}>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar style="auto" />
+    </ApolloProvider>
   );
 }
