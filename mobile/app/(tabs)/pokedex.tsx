@@ -1,6 +1,10 @@
 import { gql } from "@apollo/client";
-import { SafeAreaView, View, Text, Image, ActivityIndicator, FlatList } from "react-native";
+import { SafeAreaView, View, Text, ActivityIndicator } from "react-native";
 import { useQuery } from "@apollo/client";
+import PokedexList from "@/components/PokedexList";
+import { useState } from "react";
+import { SearchBar } from "@/components/SearchBar";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const GET_GEN_ONE_POKEMON = gql`
   query GetGenOnePokemon {
@@ -22,34 +26,26 @@ const GET_GEN_ONE_POKEMON = gql`
 export default function PokedexScreen() {
   const { loading, error, data } = useQuery(GET_GEN_ONE_POKEMON);
 
+  const [searchText, setSearchText] = useState("");
+
   if (loading) return <ActivityIndicator className="flex-1" size="large" />;
   if (error) return <Text className="flex-1">Error: {error.message}</Text>;
 
+  const pokemonData = data.gen1_species;
+  const filteredPokemon = pokemonData.filter((item: any) => {
+    const pokemon = item.pokemon_v2_pokemons[0];
+    return pokemon.name.toLowerCase().includes(searchText.toLowerCase());
+  });
+
   return (
     <SafeAreaView>
-      <FlatList
-        data={data.gen1_species}
-        keyExtractor={(item) => item.pokemon_v2_pokemons[0].id.toString()}
-        renderItem={({ item }) => {
-          const pokemon = item.pokemon_v2_pokemons[0];
-          let spriteUrl = null;
+      <View className="flex flex-row items-center justify-center mb-6">
+        <Text className="text-red-500 text-3xl font-bold mx-2">Pokedex</Text>
+        <MaterialCommunityIcons name="pokeball" size={32} color={"#ef4444"} />
+      </View>
 
-          try {
-            const sprites = pokemon.pokemon_v2_pokemonsprites[0].sprites;
-            const spriteObj = typeof sprites === 'string' ? JSON.parse(sprites) : sprites;
-            spriteUrl = spriteObj.other.home.front_default;
-          } catch (e) {
-            spriteUrl = null;
-          }
-
-          return (
-            <View className="flex items-center p-3">
-              {spriteUrl && <Image source={{ uri: spriteUrl }} className="w-14 h-14" />}
-              <Text className="text-lg capitalize">{pokemon.name}</Text>
-            </View>
-          );
-        }}
-      />
+      <SearchBar search={searchText} setSearch={setSearchText} />
+      <PokedexList pokemonData={filteredPokemon} />
     </SafeAreaView>
   );
 }

@@ -6,7 +6,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView className="flex-1 items-center bg-white">
       <ScrollView>
-        <View className="flex flex-row items-center justify-center mb-10">
+        <View className="flex flex-row items-center justify-center mb-6">
           <Text className="text-red-500 text-3xl font-bold mx-2">PocketDex</Text>
           <MaterialCommunityIcons name="pokeball" size={32} color={"#ef4444"} />
         </View>
