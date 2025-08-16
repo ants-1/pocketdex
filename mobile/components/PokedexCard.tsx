@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { Href, useRouter } from "expo-router";
 import { Image, Text, TouchableOpacity } from "react-native";
 
 interface PokemonCardProps {
@@ -8,15 +8,17 @@ interface PokemonCardProps {
     spriteUrl: string | null;
     pokemonTypes: [];
   };
+  isMyDex: boolean;
 }
 
-export const PokemonCard: React.FC<PokemonCardProps> = ({ pokemonDetails }) => {
+export const PokemonCard: React.FC<PokemonCardProps> = ({ pokemonDetails, isMyDex }) => {
   const { id, spriteUrl, name, pokemonTypes } = pokemonDetails;
   const router = useRouter();
+  const pathname = isMyDex ? `/mydex/${id}` : `/pokedex/${id}`;
 
   return (
     <TouchableOpacity
-      onPress={() => router.push(`/pokedex/${id}`)}
+      onPress={() => router.push(pathname as Href)}
       className="flex items-center p-3 border-gray-300 border-2 rounded-xl h-48 w-40 gap-2"
     >
       {spriteUrl && <Image source={{ uri: spriteUrl }} className="w-20 h-20" />}

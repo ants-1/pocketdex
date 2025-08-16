@@ -1,7 +1,7 @@
 import { FlatList, View } from "react-native";
 import { PokemonCard } from "./PokedexCard";
 
-export default function PokedexList({ pokemonData }: any) {
+export default function PokedexList({ pokemonData, isMyDex }: any) {
   return (
     <FlatList
       data={pokemonData}
@@ -33,7 +33,7 @@ export default function PokedexList({ pokemonData }: any) {
         return (
           <View
             className="flex items-center mb-8">
-            <PokemonCard pokemonDetails={pokemonDetails} />
+            <PokemonCard pokemonDetails={pokemonDetails} isMyDex={isMyDex} />
           </View>
         );
       }}

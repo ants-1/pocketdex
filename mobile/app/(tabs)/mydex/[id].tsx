@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/client";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { GET_POKEMON_BY_ID } from "@/graphql/queries/getPokemonById";
 
-export default function PokedexDetailsScreen() {
+export default function MyDexDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const pokemonId = Number(id);
 
