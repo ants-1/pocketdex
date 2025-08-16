@@ -17,12 +17,14 @@ export default function MyDexDetailsScreen() {
 
   const pokemon = data.pokemon_v2_pokemon_by_pk;
 
-  let spriteUrl = null;
+  let spriteUrl;
   try {
     const sprites = pokemon.pokemon_v2_pokemonsprites[0].sprites;
     const spriteObj = typeof sprites === "string" ? JSON.parse(sprites) : sprites;
     spriteUrl = spriteObj.other.home.front_default;
-  } catch { }
+  } catch { 
+    spriteUrl = null;
+  }
 
   const types = pokemon.pokemon_v2_pokemontypes.map((t: any) => t.pokemon_v2_type.name);
 

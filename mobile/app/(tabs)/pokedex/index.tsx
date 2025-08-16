@@ -1,4 +1,4 @@
-import { SafeAreaView, View, Text, ActivityIndicator } from "react-native";
+import { SafeAreaView, View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useQuery } from "@apollo/client";
 import PokedexList from "@/components/PokedexList";
 import { useState } from "react";
@@ -7,18 +7,44 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { GET_GEN_ONE_POKEMON } from "@/graphql/queries/getGenOnePokemon";
 
 export default function PokedexScreen() {
-  const { loading, error, data } = useQuery(GET_GEN_ONE_POKEMON);
+  const { loading, error, data, fetchMore } = useQuery(GET_GEN_ONE_POKEMON, {
+    variables: {
+      offset: 0,
+      limit: 10,
+    },
+    notifyOnNetworkStatusChange: true,
+  });
 
   const [searchText, setSearchText] = useState("");
 
-  if (loading) return <ActivityIndicator className="flex-1" size="large" />;
+  if (loading && !data) return <ActivityIndicator className="flex-1" size="large" />;
   if (error) return <Text className="flex-1">Error: {error.message}</Text>;
 
-  const pokemonData = data.gen1_species;
+  const pokemonData = data?.gen1_species ?? [];
+
   const filteredPokemon = pokemonData.filter((item: any) => {
     const pokemon = item.pokemon_v2_pokemons[0];
     return pokemon.name.toLowerCase().includes(searchText.toLowerCase());
   });
+
+  const handleLoadMore = () => {
+    fetchMore({
+      variables: {
+        offset: pokemonData.length,
+        limit: 10,
+      },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return previousResult;
+
+        return {
+          gen1_species: [
+            ...previousResult.gen1_species,
+            ...fetchMoreResult.gen1_species,
+          ],
+        };
+      },
+    });
+  };
 
   return (
     <SafeAreaView>
@@ -28,8 +54,13 @@ export default function PokedexScreen() {
       </View>
 
       <SearchBar search={searchText} setSearch={setSearchText} />
+
       <View className="mb-80">
-        <PokedexList pokemonData={filteredPokemon} isMyDex={false}/>
+        <PokedexList
+          pokemonData={filteredPokemon}
+          isMyDex={false}
+          onLoadMore={handleLoadMore}
+        />
       </View>
     </SafeAreaView>
   );

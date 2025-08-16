@@ -1,7 +1,7 @@
-import { FlatList, View } from "react-native";
+import { FlatList, TouchableOpacity, View, Text } from "react-native";
 import { PokemonCard } from "./PokedexCard";
 
-export default function PokedexList({ pokemonData, isMyDex }: any) {
+export default function PokedexList({ pokemonData, isMyDex, onLoadMore }: any) {
   return (
     <FlatList
       data={pokemonData}
@@ -37,6 +37,14 @@ export default function PokedexList({ pokemonData, isMyDex }: any) {
           </View>
         );
       }}
+      ListFooterComponent={() => (
+        <TouchableOpacity
+          onPress={onLoadMore}
+          className="bg-red-500 border-black border-2 p-3 rounded-full mt-4 mx-auto mb-10"
+        >
+          <Text className="text-white font-bold">Load More</Text>
+        </TouchableOpacity>
+      )}
     />
   )
 }

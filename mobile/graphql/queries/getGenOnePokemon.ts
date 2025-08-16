@@ -1,10 +1,12 @@
 import { gql } from "@apollo/client";
 
 export const GET_GEN_ONE_POKEMON = gql`
-  query GetGenOnePokemon {
+  query GetGenOnePokemon($offset: Int, $limit: Int) {
     gen1_species: pokemon_v2_pokemonspecies(
       where: { pokemon_v2_generation: { name: { _eq: "generation-i" } } }
       order_by: { id: asc }
+      offset: $offset
+      limit: $limit
     ) {
       pokemon_v2_pokemons {
         id
