@@ -1,27 +1,10 @@
-import { gql } from "@apollo/client";
 import { SafeAreaView, View, Text, ActivityIndicator } from "react-native";
 import { useQuery } from "@apollo/client";
 import PokedexList from "@/components/PokedexList";
 import { useState } from "react";
 import { SearchBar } from "@/components/SearchBar";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
-const GET_GEN_ONE_POKEMON = gql`
-  query GetGenOnePokemon {
-    gen1_species: pokemon_v2_pokemonspecies(
-      where: { pokemon_v2_generation: { name: { _eq: "generation-i" } } }
-      order_by: { id: asc }
-    ) {
-      pokemon_v2_pokemons {
-        id
-        name
-        pokemon_v2_pokemonsprites {
-          sprites
-        }
-      }
-    }
-  }
-`;
+import { GET_GEN_ONE_POKEMON } from "@/graphql/queries/getGenOnePokemon";
 
 export default function PokedexScreen() {
   const { loading, error, data } = useQuery(GET_GEN_ONE_POKEMON);
@@ -45,7 +28,9 @@ export default function PokedexScreen() {
       </View>
 
       <SearchBar search={searchText} setSearch={setSearchText} />
-      <PokedexList pokemonData={filteredPokemon} />
+      <View className="mb-80">
+        <PokedexList pokemonData={filteredPokemon} />
+      </View>
     </SafeAreaView>
   );
 }

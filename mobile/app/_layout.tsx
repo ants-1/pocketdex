@@ -1,7 +1,7 @@
 import "../global.css";
 import { Stack } from "expo-router";
 import { ApolloProvider } from "@apollo/client";
-import { client } from "@/lib/apolloClient";
+import { client } from "@/graphql/apolloClient";
 import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {

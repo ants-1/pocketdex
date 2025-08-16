@@ -16,14 +16,23 @@ export default function PokedexList({ pokemonData }: any) {
         try {
           const sprites = pokemon.pokemon_v2_pokemonsprites[0].sprites;
           const spriteObj = typeof sprites === 'string' ? JSON.parse(sprites) : sprites;
-          spriteUrl = spriteObj.other.home.front_default;
+          spriteUrl = spriteObj.other.home.front_default;;
         } catch (e) {
           spriteUrl = null;
         }
-        const pokemonDetails = { spriteUrl, name: pokemon.name }
+
+        const pokemonTypes = pokemon.pokemon_v2_pokemontypes.map(
+          (t: any) => t.pokemon_v2_type.name
+        )
+        const pokemonDetails = {
+          id: pokemon.id.toString(),
+          spriteUrl,
+          name: pokemon.name,
+          pokemonTypes
+        }
         return (
-          <View 
-          className="flex items-center mb-8">
+          <View
+            className="flex items-center mb-8">
             <PokemonCard pokemonDetails={pokemonDetails} />
           </View>
         );
