@@ -5,11 +5,13 @@ import { useState } from "react";
 import { SearchBar } from "@/components/SearchBar";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { GET_GEN_ONE_POKEMON } from "@/graphql/queries/getGenOnePokemon";
+import FilterButton from "@/components/FilterButton";
 
 export default function MyDexScreen() {
   const { loading, error, data } = useQuery(GET_GEN_ONE_POKEMON);
 
   const [searchText, setSearchText] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   if (loading) return <ActivityIndicator className="flex-1" size="large" />;
   if (error) return <Text className="flex-1">Error: {error.message}</Text>;
@@ -27,9 +29,13 @@ export default function MyDexScreen() {
         <MaterialCommunityIcons name="pokeball" size={32} color={"#ef4444"} />
       </View>
 
-      <SearchBar search={searchText} setSearch={setSearchText} />
+      <View className="flex flex-row justify-center">
+        <SearchBar search={searchText} setSearch={setSearchText} />
+        <FilterButton isOpen={isOpen} setIsOpen={setIsOpen} />
+      </View>
+
       <View className="mb-80">
-        <PokedexList pokemonData={filteredPokemon} isMyDex={true}/>
+        <PokedexList pokemonData={filteredPokemon} isMyDex={true} />
       </View>
     </SafeAreaView>
   );

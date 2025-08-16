@@ -8,7 +8,7 @@ interface SearchBarProps {
 
 export const SearchBar: React.FC<SearchBarProps> = ({ search, setSearch }) => {
   return (
-    <View className="flex-row items-center bg-gray-100 rounded-full px-4 py-4 mx-4 mt-2 mb-8 shadow-sm border border-red-500">
+    <View className="flex-row items-center bg-gray-100 rounded-full px-4 py-4 mr-4 mt-2 mb-8 shadow-sm border border-red-500 w-4/6">
       <Ionicons name="search" size={20} color="#888" />
       <TextInput
         className="flex-1 ml-2 text-base"
