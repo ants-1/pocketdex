@@ -1,5 +1,5 @@
 import { LinkButton } from "@/components/LinkButton";
-import { SafeAreaView, View, Text, ScrollView } from "react-native";
+import { SafeAreaView, View, Text, ScrollView, Image } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function HomeScreen() {
@@ -12,8 +12,13 @@ export default function HomeScreen() {
         </View>
 
         <View className="flex items-center justify-center p-4 mb-14">
-          {/* Image placeholder */}
-          <View className="w-64 h-40 bg-gray-200 mb-2 rounded-lg" />
+          <View className="w-64 h-40 border absolute mb-40 rounded-lg z-10 bg-white"></View>
+          <View className="w-72 h-48 border absolute mb-40 rounded-lg bg-red-500 z-0"></View>
+          <Image
+            source={require("../../assets/images/charizard-img.png")}
+            className="w-72 h-48 mb-2 z-50"
+            resizeMode="contain"
+          />
           <Text className="text-xl font-semibold mb-2">Pokedex</Text>
           <Text className="text-center text-gray-600 mb-6">
             Check out the Pokedex and search for your favorite Pokemon.
@@ -21,9 +26,14 @@ export default function HomeScreen() {
           <LinkButton link="/pokedex" name="Go to Pokedex"></LinkButton>
         </View>
 
-        <View className="flex items-center justify-center p-4 mb-14">
-          {/* Image placeholder */}
-          <View className="w-64 h-40 bg-gray-200 mb-2 rounded-lg" />
+        <View className="flex items-center justify-center p-4 mb-16">
+          <View className="w-64 h-40 border absolute mb-40 rounded-lg z-10 bg-white"></View>
+          <View className="w-72 h-48 border absolute mb-40 rounded-lg bg-blue-500 z-0"></View>
+          <Image
+            source={require("../../assets/images/articuno-img.png")}
+            className="w-72 h-48 mb-2 z-50"
+            resizeMode="contain"
+          />
           <Text className="text-xl font-semibold mb-2">MyDex</Text>
           <Text className="text-center text-gray-600 mb-6">
             Manage and view your own Pokedex.
@@ -32,8 +42,13 @@ export default function HomeScreen() {
         </View>
 
         <View className="flex items-center justify-center px-4 mb-10">
-          {/* Image placeholder */}
-          <View className="w-64 h-40 bg-gray-200 mb-2 rounded-lg" />
+          <View className="w-64 h-40 border absolute mb-40 rounded-lg z-10 bg-white"></View>
+          <View className="w-72 h-48 border absolute mb-40 rounded-lg bg-yellow-500 z-0"></View>
+          <Image
+            source={require("../../assets/images/ash-img.png")}
+            className="w-72 h-48 mb-2 z-50"
+            resizeMode="contain"
+          />
           <Text className="text-xl font-semibold mb-2">Pokemon Quiz</Text>
           <Text className="text-center text-gray-600 mb-6">
             Test your knowledge and see if you're a Pokemon master.
