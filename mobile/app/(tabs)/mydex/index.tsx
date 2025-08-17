@@ -1,4 +1,4 @@
-import { SafeAreaView, View, Text, ActivityIndicator } from "react-native";
+import { SafeAreaView, View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
 import PokedexList from "@/components/PokedexList";
 import { useState } from "react";
 import { SearchBar } from "@/components/SearchBar";
@@ -8,6 +8,12 @@ import { useQuery } from "@apollo/client";
 import { localClient } from "@/graphql/apolloClient";
 import { GET_MY_DEX } from "@/graphql/queries/getMyDex";
 
+const POKEMON_TYPES = [
+  "normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost",
+  "steel", "fire", "water", "grass", "electric", "psychic", "ice", "dragon",
+  "dark", "fairy", "stellar", "unknown", "shadow"
+];
+
 export default function MyDexScreen() {
   const { data, loading, error } = useQuery(GET_MY_DEX, {
     client: localClient,
@@ -15,6 +21,7 @@ export default function MyDexScreen() {
 
   const [searchText, setSearchText] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
 
   if (loading) return <ActivityIndicator className="flex-1" size="large" />;
   if (error)
@@ -25,11 +32,19 @@ export default function MyDexScreen() {
     );
 
   const pokemonList = data?.myDex || [];
-  console.log(data);
 
-  const filteredPokemon = pokemonList.filter((pokemon: any) =>
-    pokemon.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredPokemon = pokemonList.filter((pokemon: any) => {
+    const matchesSearch = pokemon.name
+      .toLowerCase()
+      .includes(searchText.toLowerCase());
+
+    const matchesType = selectedType
+      ? pokemon.pokemonTypes.includes(selectedType)
+      : true;
+
+    return matchesSearch && matchesType;
+  });
+
 
   return (
     <SafeAreaView>
@@ -42,6 +57,24 @@ export default function MyDexScreen() {
         <SearchBar search={searchText} setSearch={setSearchText} />
         <FilterButton isOpen={isOpen} setIsOpen={setIsOpen} />
       </View>
+      {isOpen && (
+        <View className="h-full px-12">
+          <Text className="text-xl font-semibold text-red-500">Filter by Type</Text>
+          <View className="flex-row flex-wrap gap-2 my-2">
+            {POKEMON_TYPES.map((type) => (
+              <TouchableOpacity
+                key={type}
+                onPress={() => setSelectedType(type === selectedType ? null : type)}
+                className={`px-3 py-2 rounded-full border-2 ${selectedType === type ? "bg-red-500 border-black" : "bg-gray-200 border-gray-400"}`}
+              >
+                <Text className={`${selectedType === type ? "text-white" : "text-black"} capitalize`}>
+                  {type}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      )}
 
       <View className="mb-80">
         <PokedexList pokemonData={filteredPokemon} isMyDex={true} />

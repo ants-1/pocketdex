@@ -26,7 +26,7 @@ export default function HomeScreen() {
           <View className="w-64 h-40 bg-gray-200 mb-2 rounded-lg" />
           <Text className="text-xl font-semibold mb-2">MyDex</Text>
           <Text className="text-center text-gray-600 mb-6">
-            Manage and view your own pokedex.
+            Manage and view your own Pokedex.
           </Text>
           <LinkButton link="/mydex" name="Go to MyDex"></LinkButton>
         </View>

@@ -22,7 +22,7 @@ export default function PokedexList({
       numColumns={2}
       columnWrapperStyle={{ justifyContent: "space-evenly" }}
       contentContainerStyle={{ padding: 8 }}
-      keyExtractor={(item) => item.id.toString()}
+      keyExtractor={(item, index) => `${item.id}-${index}`}
       renderItem={({ item }) => (
         <View className="flex items-center mb-8">
           <PokemonCard pokemonDetails={item} isMyDex={isMyDex} />
