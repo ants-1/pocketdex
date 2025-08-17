@@ -3,18 +3,20 @@ import { PokemonCard } from "./PokedexCard";
 
 interface PokedexListProps {
   pokemonData: any[];
-  isMyDex: boolean;
   onLoadMore?: () => void;
   loadingMore?: boolean;
   hasMore?: boolean;
+  isMyDex: boolean;
+  refetchMyDex?: () => void;
 }
 
 export default function PokedexList({
   pokemonData,
-  isMyDex,
   onLoadMore,
   loadingMore = false,
   hasMore = true,
+  isMyDex,
+  refetchMyDex,
 }: PokedexListProps) {
   return (
     <FlatList
@@ -25,7 +27,12 @@ export default function PokedexList({
       keyExtractor={(item, index) => `${item.id}-${index}`}
       renderItem={({ item }) => (
         <View className="flex items-center mb-8">
-          <PokemonCard pokemonDetails={item} isMyDex={isMyDex} />
+          <PokemonCard
+            pokemonDetails={item}
+            isMyDex={isMyDex}
+            isFav={item.isFavorite}
+            refetchMyDex={refetchMyDex} 
+          />
         </View>
       )}
       ListEmptyComponent={

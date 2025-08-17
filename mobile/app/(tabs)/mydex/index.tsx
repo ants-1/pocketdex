@@ -15,36 +15,35 @@ const POKEMON_TYPES = [
 ];
 
 export default function MyDexScreen() {
-  const { data, loading, error } = useQuery(GET_MY_DEX, {
-    client: localClient,
-  });
+  const { data, loading, error, refetch } = useQuery(GET_MY_DEX, { client: localClient });
 
   const [searchText, setSearchText] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedType, setSelectedType] = useState<string | null>(null);
 
   if (loading) return <ActivityIndicator className="flex-1" size="large" />;
-  if (error)
-    return (
-      <View className="flex-1 items-center justify-center">
-        <Text>Error: {error.message}</Text>
-      </View>
+  if (error) return (
+    <View className="flex-1 items-center justify-center">
+      <Text>Error: {error.message}</Text>
+    </View>
+  );
+
+  const myDex = data?.myDex ?? [];
+  const filteredPokemon = myDex
+    .map((pokemon: any) => ({
+      id: pokemon.id,
+      name: pokemon.name,
+      spriteUrl: pokemon.spriteUrl,
+      pokemonTypes: pokemon.pokemonTypes,
+      isMyDex: true,
+      isFavorite: true,
+    }))
+    .filter((pokemon: any) =>
+      pokemon.name.toLowerCase().includes(searchText.toLowerCase())
+    )
+    .filter((pokemon: any) =>
+      selectedType ? pokemon.pokemonTypes.includes(selectedType) : true
     );
-
-  const pokemonList = data?.myDex || [];
-
-  const filteredPokemon = pokemonList.filter((pokemon: any) => {
-    const matchesSearch = pokemon.name
-      .toLowerCase()
-      .includes(searchText.toLowerCase());
-
-    const matchesType = selectedType
-      ? pokemon.pokemonTypes.includes(selectedType)
-      : true;
-
-    return matchesSearch && matchesType;
-  });
-
 
   return (
     <SafeAreaView>
@@ -57,6 +56,7 @@ export default function MyDexScreen() {
         <SearchBar search={searchText} setSearch={setSearchText} />
         <FilterButton isOpen={isOpen} setIsOpen={setIsOpen} />
       </View>
+
       {isOpen && (
         <View className="h-full px-12">
           <Text className="text-xl font-semibold text-red-500">Filter by Type</Text>
@@ -77,7 +77,11 @@ export default function MyDexScreen() {
       )}
 
       <View className="mb-80">
-        <PokedexList pokemonData={filteredPokemon} isMyDex={true} />
+        <PokedexList
+          pokemonData={filteredPokemon}
+          isMyDex={true}
+          refetchMyDex={refetch} 
+        />
       </View>
     </SafeAreaView>
   );

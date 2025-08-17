@@ -1,10 +1,11 @@
 import { Href, useRouter } from "expo-router";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { localClient } from "@/graphql/apolloClient";
 import { ADD_TO_MY_DEX } from "@/graphql/mutations/addToMyDex";
 import { REMOVE_FROM_MY_DEX } from "@/graphql/mutations/removeFromMyDex";
+import { FontAwesome } from "@expo/vector-icons";
 
 interface PokemonCardProps {
   pokemonDetails: {
@@ -14,23 +15,23 @@ interface PokemonCardProps {
     pokemonTypes: string[];
   };
   isMyDex: boolean;
+  refetchMyDex?: () => void;
+  isFav: boolean;
 }
 
-export const PokemonCard: React.FC<PokemonCardProps> = ({ pokemonDetails, isMyDex }) => {
+export const PokemonCard: React.FC<PokemonCardProps> = ({ pokemonDetails, isMyDex, refetchMyDex, isFav }) => {
   const { id, spriteUrl, name, pokemonTypes } = pokemonDetails;
   const router = useRouter();
   const pathname = isMyDex ? `/mydex/${id}` : `/pokedex/${id}`;
-
-  const [isFavorite, setIsFavorite] = useState(isMyDex);
 
   const [addToMyDex] = useMutation(ADD_TO_MY_DEX, { client: localClient });
   const [removeFromMyDex] = useMutation(REMOVE_FROM_MY_DEX, { client: localClient });
 
   const handleToggleFavorite = async () => {
     try {
-      if (!isFavorite) {
+      if (!isFav) {
         await addToMyDex({
-          variables: { id, name, pokemonTypes, spriteUrl },
+          variables: { id, myDex: { id, name, pokemonTypes, spriteUrl } },
           refetchQueries: ["GetMyDex"],
         });
       } else {
@@ -39,7 +40,7 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({ pokemonDetails, isMyDe
           refetchQueries: ["GetMyDex"],
         });
       }
-      setIsFavorite(!isFavorite);
+      refetchMyDex?.();
     } catch (err) {
       console.error("Failed to toggle MyDex:", err);
     }
@@ -52,18 +53,19 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({ pokemonDetails, isMyDe
     >
       {spriteUrl && <Image source={{ uri: spriteUrl }} className="w-20 h-20" />}
       <Text className="text-lg capitalize font-semibold">{name}</Text>
-      <Text className="text-gray-500 capitalize">
-        {pokemonTypes.join(" / ")}
-      </Text>
+      <Text className="text-gray-500 capitalize">{pokemonTypes.join(" / ")}</Text>
 
       <TouchableOpacity
         onPress={handleToggleFavorite}
         className="absolute flex items-center justify-center top-2 right-2 bg-white rounded-full p-1 w-10 h-10"
       >
-        <Text className={`text-xl ${isFavorite ? "text-red-500" : "text-gray-400"}`}>
-          {isFavorite ? "♥" : "♡"}
+        <Text className={`${isFav ? "text-red-500" : "text-gray-400"}`}>
+          {isFav ?
+            <FontAwesome name="heart" className="w-10 h-10" /> :
+            <FontAwesome name="heart-o" className="w-10 h-10" />}
         </Text>
       </TouchableOpacity>
     </TouchableOpacity>
   );
 };
+

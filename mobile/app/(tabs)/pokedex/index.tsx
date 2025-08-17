@@ -5,18 +5,24 @@ import { useState } from "react";
 import { SearchBar } from "@/components/SearchBar";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { GET_GEN_ONE_POKEMON } from "@/graphql/queries/getGenOnePokemon";
+import { GET_MY_DEX } from "@/graphql/queries/getMyDex";
+import { localClient } from "@/graphql/apolloClient";
 import FilterButton from "@/components/FilterButton";
 
 const POKEMON_TYPES = [
-  "normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost",
-  "steel", "fire", "water", "grass", "electric", "psychic", "ice", "dragon",
-  "dark", "fairy", "stellar", "unknown", "shadow"
+  "normal","fighting","flying","poison","ground","rock","bug","ghost",
+  "steel","fire","water","grass","electric","psychic","ice","dragon",
+  "dark","fairy","stellar","unknown","shadow"
 ];
 
 export default function PokedexScreen() {
   const { loading, error, data, fetchMore } = useQuery(GET_GEN_ONE_POKEMON, {
     variables: { offset: 0, limit: 10, type: null },
     notifyOnNetworkStatusChange: true,
+  });
+
+  const { data: myDexData, refetch: refetchMyDex } = useQuery(GET_MY_DEX, {
+    client: localClient,
   });
 
   const [searchText, setSearchText] = useState("");
@@ -32,6 +38,7 @@ export default function PokedexScreen() {
     );
 
   const pokemonData = data?.gen1_species ?? [];
+  const myDex = myDexData?.myDex ?? [];
 
   const filteredPokemon = pokemonData
     .map((item: any) => {
@@ -39,14 +46,16 @@ export default function PokedexScreen() {
       let spriteUrl = null;
 
       try {
-        const sprites = pokemon.pokemon_v2_pokemonsprites[0].sprites;
+        const sprites = pokemon.pokemon_v2_pokemonsprites[0]?.sprites;
         const spriteObj = typeof sprites === "string" ? JSON.parse(sprites) : sprites;
-        spriteUrl = spriteObj.other.home.front_default;
+        spriteUrl = spriteObj?.other?.home?.front_default ?? null;
       } catch {
         spriteUrl = null;
       }
 
       const pokemonTypes = pokemon.pokemon_v2_pokemontypes.map((t: any) => t.pokemon_v2_type.name);
+
+      const isFavorite = myDex.some((fav: any) => fav.id === pokemon.id.toString());
 
       return {
         id: pokemon.id.toString(),
@@ -55,6 +64,7 @@ export default function PokedexScreen() {
         pokemonTypes,
         height: pokemon.height,
         weight: pokemon.weight,
+        isFavorite,
       };
     })
     .filter((pokemon: any) =>
@@ -62,7 +72,7 @@ export default function PokedexScreen() {
     )
     .filter((pokemon: any) =>
       selectedType ? pokemon.pokemonTypes.includes(selectedType) : true
-    )
+    );
 
   const handleLoadMore = () => {
     fetchMore({
@@ -70,7 +80,10 @@ export default function PokedexScreen() {
       updateQuery: (previousResult, { fetchMoreResult }) => {
         if (!fetchMoreResult) return previousResult;
         return {
-          gen1_species: [...previousResult.gen1_species, ...fetchMoreResult.gen1_species],
+          gen1_species: [
+            ...previousResult.gen1_species,
+            ...fetchMoreResult.gen1_species,
+          ],
         };
       },
     });
@@ -87,6 +100,7 @@ export default function PokedexScreen() {
         <SearchBar search={searchText} setSearch={setSearchText} />
         <FilterButton isOpen={isOpen} setIsOpen={setIsOpen} />
       </View>
+
       {isOpen && (
         <View className="h-full px-12">
           <Text className="text-xl font-semibold text-red-500">Filter by Type</Text>
@@ -109,8 +123,9 @@ export default function PokedexScreen() {
       <View className="mb-80">
         <PokedexList
           pokemonData={filteredPokemon}
-          isMyDex={false}
           onLoadMore={handleLoadMore}
+          isMyDex={false}
+          refetchMyDex={refetchMyDex} 
         />
       </View>
     </SafeAreaView>
