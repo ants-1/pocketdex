@@ -12,6 +12,17 @@ const typeDefs = `#graphql
   type Query {
     myDex: [Pokemon]
   }
+  type Mutation {
+    addToMyDex(id: ID!, myDex: AddMyDexInput!): Pokemon
+    removeFromMyDex(id: ID!): Pokemon
+  }
+  input AddMyDexInput {
+    id: ID!, 
+    name: String!, 
+    pokemonTypes: [String!]!, 
+    spriteUrl: String!
+  }
+
 `;
 
 // Mock data
@@ -38,6 +49,25 @@ const resolvers = {
   Query: {
     myDex: () => MyDex,
   },
+  Mutation: {
+    addToMyDex: (_: any, { id, name, pokemonTypes, spriteUrl }: any) => {
+      const exists = MyDex.find((p) => p.id === id);
+      if (!exists) {
+        const newPokemon = { id, name, pokemonTypes, spriteUrl };
+        MyDex.push(newPokemon);
+        return newPokemon;
+      }
+      return exists;
+    },
+    removeFromMyDex: (_: any, { id }: any) => {
+      const index = MyDex.findIndex((p) => p.id === id);
+      if (index >= 0) {
+        const [removed] = MyDex.splice(index, 1);
+        return removed;
+      }
+      return null;
+    },
+  },
 };
 
 const server = new ApolloServer({
@@ -46,7 +76,7 @@ const server = new ApolloServer({
 });
 
 const { url } = await startStandaloneServer(server, {
-  listen: { port: 4000, host: "0.0.0.0" }, 
+  listen: { port: 4000, host: "0.0.0.0" },
 });
 
 console.log(`Server ready at: ${url}`);

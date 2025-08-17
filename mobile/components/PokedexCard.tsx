@@ -1,6 +1,10 @@
 import { Href, useRouter } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { localClient } from "@/graphql/apolloClient";
+import { ADD_TO_MY_DEX } from "@/graphql/mutations/addToMyDex";
+import { REMOVE_FROM_MY_DEX } from "@/graphql/mutations/removeFromMyDex";
 
 interface PokemonCardProps {
   pokemonDetails: {
@@ -19,13 +23,25 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({ pokemonDetails, isMyDe
 
   const [isFavorite, setIsFavorite] = useState(isMyDex);
 
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+  const [addToMyDex] = useMutation(ADD_TO_MY_DEX, { client: localClient });
+  const [removeFromMyDex] = useMutation(REMOVE_FROM_MY_DEX, { client: localClient });
 
-    if (!isFavorite) {
-      console.log(`Adding ${name} to MyDex`);
-    } else {
-      console.log(`Removing ${name} from MyDex`);
+  const handleToggleFavorite = async () => {
+    try {
+      if (!isFavorite) {
+        await addToMyDex({
+          variables: { id, name, pokemonTypes, spriteUrl },
+          refetchQueries: ["GetMyDex"],
+        });
+      } else {
+        await removeFromMyDex({
+          variables: { id },
+          refetchQueries: ["GetMyDex"],
+        });
+      }
+      setIsFavorite(!isFavorite);
+    } catch (err) {
+      console.error("Failed to toggle MyDex:", err);
     }
   };
 
@@ -40,9 +56,8 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({ pokemonDetails, isMyDe
         {pokemonTypes.join(" / ")}
       </Text>
 
-      {/* Favorite button */}
       <TouchableOpacity
-        onPress={toggleFavorite}
+        onPress={handleToggleFavorite}
         className="absolute flex items-center justify-center top-2 right-2 bg-white rounded-full p-1 w-10 h-10"
       >
         <Text className={`text-xl ${isFavorite ? "text-red-500" : "text-gray-400"}`}>

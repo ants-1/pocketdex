@@ -15,7 +15,7 @@ const POKEMON_TYPES = [
 
 export default function PokedexScreen() {
   const { loading, error, data, fetchMore } = useQuery(GET_GEN_ONE_POKEMON, {
-    variables: { offset: 0, limit: 10 },
+    variables: { offset: 0, limit: 10, type: null },
     notifyOnNetworkStatusChange: true,
   });
 

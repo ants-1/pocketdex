@@ -1,4 +1,4 @@
-import { FlatList, View } from "react-native";
+import { FlatList, View, Text } from "react-native";
 import { PokemonCard } from "./PokedexCard";
 
 interface PokedexListProps {
@@ -28,6 +28,11 @@ export default function PokedexList({
           <PokemonCard pokemonDetails={item} isMyDex={isMyDex} />
         </View>
       )}
+      ListEmptyComponent={
+        <View className="flex-1 items-center justify-center mt-8">
+          <Text className="text-gray-500 text-lg">None Found</Text>
+        </View>
+      }
       onEndReached={() => {
         if (onLoadMore && !loadingMore && hasMore) onLoadMore();
       }}
