@@ -13,7 +13,12 @@ export default function PokedexDetailsScreen() {
   });
 
   if (loading) return <ActivityIndicator size="large" className="flex-1" />;
-  if (error) return <Text>Error: {error.message}</Text>;
+  if (error)
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text>Error: {error.message}</Text>
+      </View>
+    );
 
   const pokemon = data.pokemon_v2_pokemon_by_pk;
 
@@ -24,7 +29,7 @@ export default function PokedexDetailsScreen() {
     spriteUrl = spriteObj.other.home.front_default;
   } catch {
     spriteUrl = null;
-   }
+  }
 
   const types = pokemon.pokemon_v2_pokemontypes.map((t: any) => t.pokemon_v2_type.name);
 

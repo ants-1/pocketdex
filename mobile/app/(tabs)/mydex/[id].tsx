@@ -13,7 +13,12 @@ export default function MyDexDetailsScreen() {
   });
 
   if (loading) return <ActivityIndicator size="large" className="flex-1" />;
-  if (error) return <Text>Error: {error.message}</Text>;
+  if (error)
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text>Error: {error.message}</Text>
+      </View>
+    );
 
   const pokemon = data.pokemon_v2_pokemon_by_pk;
 
@@ -22,7 +27,7 @@ export default function MyDexDetailsScreen() {
     const sprites = pokemon.pokemon_v2_pokemonsprites[0].sprites;
     const spriteObj = typeof sprites === "string" ? JSON.parse(sprites) : sprites;
     spriteUrl = spriteObj.other.home.front_default;
-  } catch { 
+  } catch {
     spriteUrl = null;
   }
 

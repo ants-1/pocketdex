@@ -1,5 +1,10 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
+export const localClient = new ApolloClient({
+  uri: "http://192.168.1.67:4000/",
+  cache: new InMemoryCache()
+});
+
 export const client = new ApolloClient({
   uri: "https://beta.pokeapi.co/graphql/v1beta",
   cache: new InMemoryCache({

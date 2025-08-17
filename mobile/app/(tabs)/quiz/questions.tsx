@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { SafeAreaView, Text, ActivityIndicator, View } from "react-native";
 import { useQuery } from "@apollo/client";
-import { GET_GEN_ONE_POKEMON } from "@/graphql/queries/getGenOnePokemon";
 import QuestionButton from "@/components/QuestionButton";
 import { useRouter } from "expo-router";
+import { GET_POKEMON_QUIZ } from "@/graphql/queries/getPokemonQuiz";
 
 const POKEMON_TYPES = [
   "normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost",
@@ -17,7 +17,7 @@ export default function QuizScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
 
-  const { loading, error, data } = useQuery(GET_GEN_ONE_POKEMON, {
+  const { loading, error, data } = useQuery(GET_POKEMON_QUIZ, {
     variables: { offset: 0, limit: 151 },
   });
 
@@ -86,8 +86,18 @@ export default function QuizScreen() {
   };
 
   if (loading) return <ActivityIndicator size="large" className="flex-1" />;
-  if (error) return <Text>Error: {error.message}</Text>;
-  if (!currentQuestion) return <Text>No questions available</Text>;
+  if (error)
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text>Error: {error.message}</Text>
+      </View>
+    );
+  if (!currentQuestion)
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text>No questions available</Text>
+      </View>
+    );
 
   return (
     <SafeAreaView className="flex-1 bg-white justify-center">
