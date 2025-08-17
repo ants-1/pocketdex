@@ -1,13 +1,21 @@
-import { FlatList, TouchableOpacity, View, Text } from "react-native";
+import { FlatList, View } from "react-native";
 import { PokemonCard } from "./PokedexCard";
 
 interface PokedexListProps {
   pokemonData: any[];
   isMyDex: boolean;
   onLoadMore?: () => void;
+  loadingMore?: boolean;
+  hasMore?: boolean;
 }
 
-export default function PokedexList({ pokemonData, isMyDex, onLoadMore }: PokedexListProps) {
+export default function PokedexList({
+  pokemonData,
+  isMyDex,
+  onLoadMore,
+  loadingMore = false,
+  hasMore = true,
+}: PokedexListProps) {
   return (
     <FlatList
       data={pokemonData}
@@ -20,14 +28,10 @@ export default function PokedexList({ pokemonData, isMyDex, onLoadMore }: Pokede
           <PokemonCard pokemonDetails={item} isMyDex={isMyDex} />
         </View>
       )}
-      ListFooterComponent={() => (
-        <TouchableOpacity
-          onPress={onLoadMore}
-          className="bg-red-500 border-black border-2 p-3 rounded-full mt-4 mx-auto mb-10"
-        >
-          <Text className="text-white font-bold">Load More</Text>
-        </TouchableOpacity>
-      )}
+      onEndReached={() => {
+        if (onLoadMore && !loadingMore && hasMore) onLoadMore();
+      }}
+      onEndReachedThreshold={0.7}
     />
   );
 }
