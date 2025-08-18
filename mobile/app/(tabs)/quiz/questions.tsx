@@ -4,12 +4,7 @@ import { useQuery } from "@apollo/client";
 import QuestionButton from "@/components/QuestionButton";
 import { useRouter } from "expo-router";
 import { GET_POKEMON_QUIZ } from "@/graphql/queries/getPokemonQuiz";
-
-const POKEMON_TYPES = [
-  "normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost",
-  "steel", "fire", "water", "grass", "electric", "psychic", "ice", "dragon",
-  "dark", "fairy", "stellar", "unknown", "shadow"
-];
+import { POKEMON_TYPES } from "@/constants/pokemonTypes";
 
 export default function QuizScreen() {
   const router = useRouter();

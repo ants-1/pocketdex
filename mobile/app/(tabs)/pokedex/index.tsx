@@ -8,38 +8,18 @@ import { GET_GEN_ONE_POKEMON } from "@/graphql/queries/getGenOnePokemon";
 import { GET_MY_DEX } from "@/graphql/queries/getMyDex";
 import { localClient } from "@/graphql/apolloClient";
 import FilterButton from "@/components/FilterButton";
-
-const POKEMON_TYPES = [
-  "normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost",
-  "steel", "fire", "water", "grass", "electric", "psychic", "ice", "dragon",
-  "dark", "fairy", "stellar", "unknown", "shadow"
-];
-
-const SORT_BY = [
-  { key: "name-asc", label: "Name (A-Z)" },
-  { key: "name-desc", label: "Name (Z-A)" },
-  { key: "id-asc", label: "Dex No (1-151)" },
-  { key: "id-desc", label: "Dex No (151-1)" },
-];
+import { POKEMON_TYPES, PokemonType } from "@/constants/pokemonTypes";
+import { SORT_BY, sortMapping } from "@/constants/sortOptions";
 
 export default function PokedexScreen() {
   const [searchText, setSearchText] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<PokemonType[]>([]);
   const [sortBy, setSortBy] = useState<"name-asc" | "name-desc" | "id-asc" | "id-desc">("id-asc");
-
   const [tempSelectedTypes, setTempSelectedTypes] = useState<string[]>(selectedTypes);
   const [tempSortBy, setTempSortBy] = useState(sortBy);
 
-  const sortMapping = {
-    "name-asc": { "name": "asc" },
-    "name-desc": { "name": "desc" },
-    "id-asc": { "id": "asc" },
-    "id-desc": { "id": "desc" },
-  };
-
-  const { data, loading, error, fetchMore, refetch } = useQuery(GET_GEN_ONE_POKEMON, {
+  const { data: pokeDexData, loading, error, fetchMore, refetch } = useQuery(GET_GEN_ONE_POKEMON, {
     variables: {
       offset: 0,
       limit: 10,
@@ -70,7 +50,7 @@ export default function PokedexScreen() {
     setIsOpen(!isOpen);
   };
 
-  if (loading && !data) return <ActivityIndicator className="flex-1" size="large" />;
+  if (loading && !pokeDexData) return <ActivityIndicator className="flex-1" size="large" />;
   if (error)
     return (
       <View className="flex-1 items-center justify-center">
@@ -78,7 +58,7 @@ export default function PokedexScreen() {
       </View>
     );
 
-  const pokemonData = data?.gen1_species ?? [];
+  const pokemonData = pokeDexData?.gen1_species ?? [];
   const myDex = myDexData?.myDex ?? [];
 
   const filteredPokemon = pokemonData

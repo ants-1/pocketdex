@@ -1,8 +1,8 @@
-import { useLocalSearchParams, router } from "expo-router";
-import { SafeAreaView, View, Text, Image, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import { ActivityIndicator, View, Text } from "react-native";
 import { useQuery } from "@apollo/client";
-import { FontAwesome5 } from "@expo/vector-icons";
 import { GET_POKEMON_BY_ID } from "@/graphql/queries/getPokemonById";
+import PokemonDetail from "@/components/PokemonDetail";
 
 export default function PokedexDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -22,19 +22,15 @@ export default function PokedexDetailsScreen() {
 
   const pokemon = data.pokemon_v2_pokemon_by_pk;
 
-  let spriteUrl;
+  let spriteUrl: string | null = null;
   try {
     const sprites = pokemon.pokemon_v2_pokemonsprites[0].sprites;
     const spriteObj = typeof sprites === "string" ? JSON.parse(sprites) : sprites;
     spriteUrl = spriteObj.other.home.front_default;
-  } catch {
-    spriteUrl = null;
-  }
+  } catch {}
 
   const types = pokemon.pokemon_v2_pokemontypes.map((t: any) => t.pokemon_v2_type.name);
-  const abilities = pokemon.pokemon_v2_pokemonabilities.map(
-    (a: any) => a.pokemon_v2_ability.name
-  );
+  const abilities = pokemon.pokemon_v2_pokemonabilities.map((a: any) => a.pokemon_v2_ability.name);
 
   let moves = pokemon.pokemon_v2_pokemonmoves
     .filter((m: any) => m.level > 0)
@@ -48,51 +44,19 @@ export default function PokedexDetailsScreen() {
     }));
 
   const seen = new Set<string>();
-
   moves = moves.filter((move: any) => {
     if (seen.has(move.name)) return false;
     seen.add(move.name);
     return true;
   });
 
-
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <ScrollView contentContainerStyle={{ alignItems: "center", padding: 16 }}>
-        <TouchableOpacity
-          className="bg-red-500 border-black border-2 p-4 rounded-full w-16 h-16 self-start flex items-center justify-center"
-          onPress={() => router.back()}
-        >
-          <FontAwesome5 name="chevron-left" size={20} color={"#FFF"} />
-        </TouchableOpacity>
-
-        {spriteUrl && <Image source={{ uri: spriteUrl }} className="w-72 h-72 mb-4" />}
-        <Text className="text-2xl font-bold capitalize mb-2">{pokemon.name}</Text>
-        
-        <Text className="text-lg underline text-gray-700 capitalize font-semibold">
-          Types:
-        </Text>
-        <Text className="text-lg text-gray-500 capitalize mb-2">{types.join(" / ")}</Text>
-        <Text className="text-xl underline text-gray-700 capitalize font-semibold">
-          Abilities:
-        </Text>
-        <Text className="text-lg text-gray-500 capitalize mb-2 text-wrap">{abilities.join(" / ")}</Text>
-
-        <Text className="text-xl font-semibold mb-4 underline">Moves</Text>
-        <View className="flex gap-2 w-full">
-          {moves.map((move: any, index: any) => (
-            <View
-              key={index}
-              className="bg-red-500 border-black border-2 p-4 rounded-full flex-row justify-between items-center"
-            >
-              <Text className="capitalize font-medium text-white">{move.name}</Text>
-              <Text className="text-sm text-white">
-                Lv: {move.level} | Power: {move.power ?? "0"} | Acc: {move.accuracy ?? "-"} | {move.damageClass ?? "0"}
-              </Text>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <PokemonDetail
+      spriteUrl={spriteUrl}
+      name={pokemon.name}
+      types={types}
+      abilities={abilities}
+      moves={moves}
+    />
   );
 }

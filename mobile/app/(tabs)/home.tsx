@@ -51,7 +51,7 @@ export default function HomeScreen() {
           />
           <Text className="text-xl font-semibold mb-2">Pokemon Quiz</Text>
           <Text className="text-center text-gray-600 mb-6">
-            Test your knowledge and see if you're a Pokemon master.
+            Test your knowledge and see if you&apos;re a Pokemon master.
           </Text>
           <LinkButton link="/quiz" name="Go to Quiz"></LinkButton>
         </View>
