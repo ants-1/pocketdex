@@ -20,9 +20,8 @@ const typeDefs = `#graphql
     id: ID!, 
     name: String!, 
     pokemonTypes: [String!]!, 
-    spriteUrl: String!
+    spriteUrl: String
   }
-
 `;
 
 // Mock data
@@ -50,15 +49,23 @@ const resolvers = {
     myDex: () => MyDex,
   },
   Mutation: {
-    addToMyDex: (_: any, { id, name, pokemonTypes, spriteUrl }: any) => {
+    addToMyDex: (_: any, { id, myDex }: any) => {
+      const { name, pokemonTypes, spriteUrl } = myDex;
+
       const exists = MyDex.find((p) => p.id === id);
       if (!exists) {
-        const newPokemon = { id, name, pokemonTypes, spriteUrl };
+        const newPokemon = {
+          id,
+          name,
+          pokemonTypes,
+          spriteUrl: spriteUrl ?? null,
+        };
         MyDex.push(newPokemon);
         return newPokemon;
       }
       return exists;
     },
+
     removeFromMyDex: (_: any, { id }: any) => {
       const index = MyDex.findIndex((p) => p.id === id);
       if (index >= 0) {

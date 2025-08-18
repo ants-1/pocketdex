@@ -42,7 +42,7 @@ export default function PokedexScreen() {
   const { data, loading, error, fetchMore, refetch } = useQuery(GET_GEN_ONE_POKEMON, {
     variables: {
       offset: 0,
-      limit: 151,
+      limit: 10,
       orderBy: sortMapping[sortBy],
       types: selectedTypes.length > 0 ? selectedTypes : POKEMON_TYPES,
     },
@@ -58,7 +58,7 @@ export default function PokedexScreen() {
 
       refetch({
         offset: 0,
-        limit: 151,
+        limit: 10,
         orderBy: sortMapping[tempSortBy],
         types: tempSelectedTypes.length > 0 ? tempSelectedTypes : POKEMON_TYPES,
       });
