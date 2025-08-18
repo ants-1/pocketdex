@@ -14,15 +14,15 @@
 ---
 
 ## Screenshots
-<img src="./screenshots/screenshot_1.png" alt="Landing Screen" width="300" />
-<img src="./screenshots/screenshot_2.png" alt="Home Screen" width="300" />
-<img src="./screenshots/screenshot_3.png" alt="Pokedex Screen" width="300" />
-<img src="./screenshots/screenshot_4.png" alt="MyDex Screen" width="300" />
-<img src="./screenshots/screenshot_8.png" alt="Pokedex List Filter" width="300" />
-<img src="./screenshots/screenshot_9.png" alt="Pokedex Details Screen" width="300" />
-<img src="./screenshots/screenshot_5.png" alt="Quiz Start Screen" width="300" />
-<img src="./screenshots/screenshot_6.png" alt="Quiz Question Screen" width="300" />
-<img src="./screenshots/screenshot_7.png" alt="Score Screen" width="300" />
+<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_1.PNG" alt="Landing Screen" width="300" />
+<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_2.PNG" alt="Home Screen" width="300" />
+<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_3.PNG" alt="Pokedex Screen" width="300" />
+<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_4.PNG" alt="MyDex Screen" width="300" />
+<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_8.PNG" alt="Pokedex List Filter" width="300" />
+<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_9.PNG" alt="Pokedex Details Screen" width="300" />
+<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_5.PNG" alt="Quiz Start Screen" width="300" />
+<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_6.PNG" alt="Quiz Question Screen" width="300" />
+<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_7.PNG" alt="Score Screen" width="300" />
 
 ---
 
