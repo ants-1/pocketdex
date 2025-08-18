@@ -23,19 +23,52 @@ const SORT_BY = [
 ];
 
 export default function PokedexScreen() {
-  const { loading, error, data, fetchMore } = useQuery(GET_GEN_ONE_POKEMON, {
-    variables: { offset: 0, limit: 10, type: null },
+  const [searchText, setSearchText] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState<"name-asc" | "name-desc" | "id-asc" | "id-desc">("id-asc");
+
+  const [tempSelectedTypes, setTempSelectedTypes] = useState<string[]>(selectedTypes);
+  const [tempSortBy, setTempSortBy] = useState(sortBy);
+
+  const sortMapping = {
+    "name-asc": { "name": "asc" },
+    "name-desc": { "name": "desc" },
+    "id-asc": { "id": "asc" },
+    "id-desc": { "id": "desc" },
+  };
+
+  const { data, loading, error, fetchMore, refetch } = useQuery(GET_GEN_ONE_POKEMON, {
+    variables: {
+      offset: 0,
+      limit: 151,
+      orderBy: sortMapping[sortBy],
+      types: selectedTypes.length > 0 ? selectedTypes : POKEMON_TYPES,
+    },
     notifyOnNetworkStatusChange: true,
   });
 
-  const { data: myDexData, refetch: refetchMyDex } = useQuery(GET_MY_DEX, {
-    client: localClient,
-  });
+  const { data: myDexData, refetch: refetchMyDex } = useQuery(GET_MY_DEX, { client: localClient });
 
-  const [searchText, setSearchText] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-  const [sortBy, setSortBy] = useState<"name-asc" | "name-desc" | "id-asc" | "id-desc">("id-asc");
+  const toggleFilterPanel = () => {
+    if (isOpen) {
+      setSelectedTypes(tempSelectedTypes);
+      setSortBy(tempSortBy);
+
+      refetch({
+        offset: 0,
+        limit: 151,
+        orderBy: sortMapping[tempSortBy],
+        types: tempSelectedTypes.length > 0 ? tempSelectedTypes : POKEMON_TYPES,
+      });
+    } else {
+      setTempSelectedTypes(selectedTypes);
+      setTempSortBy(sortBy);
+    }
+
+    setIsOpen(!isOpen);
+  };
 
   if (loading && !data) return <ActivityIndicator className="flex-1" size="large" />;
   if (error)
@@ -55,14 +88,10 @@ export default function PokedexScreen() {
 
       try {
         const sprites = pokemon.pokemon_v2_pokemonsprites[0]?.sprites;
-        const spriteObj = typeof sprites === "string" ? JSON.parse(sprites) : sprites;
-        spriteUrl = spriteObj?.other?.home?.front_default ?? null;
-      } catch {
-        spriteUrl = null;
-      }
+        spriteUrl = typeof sprites === "string" ? JSON.parse(sprites)?.other?.home?.front_default : sprites?.other?.home?.front_default ?? null;
+      } catch { }
 
       const pokemonTypes = pokemon.pokemon_v2_pokemontypes.map((t: any) => t.pokemon_v2_type.name);
-
       const isFavorite = myDex.some((fav: any) => fav.id === pokemon.id.toString());
 
       return {
@@ -77,26 +106,7 @@ export default function PokedexScreen() {
     })
     .filter((pokemon: any) =>
       pokemon.name.toLowerCase().includes(searchText.toLowerCase())
-    )
-    .filter((pokemon: any) =>
-      selectedTypes.length > 0
-        ? selectedTypes.some((t) => pokemon.pokemonTypes.includes(t))
-        : true
-    )
-    .sort((a: any, b: any) => {
-      switch (sortBy) {
-        case "name-asc":
-          return a.name.localeCompare(b.name);
-        case "name-desc":
-          return b.name.localeCompare(a.name);
-        case "id-asc":
-          return Number(a.id) - Number(b.id);
-        case "id-desc":
-          return Number(b.id) - Number(a.id);
-        default:
-          return Number(a.id) - Number(b.id);
-      }
-    });
+    );
 
   const handleLoadMore = () => {
     fetchMore({
@@ -104,10 +114,7 @@ export default function PokedexScreen() {
       updateQuery: (previousResult, { fetchMoreResult }) => {
         if (!fetchMoreResult) return previousResult;
         return {
-          gen1_species: [
-            ...previousResult.gen1_species,
-            ...fetchMoreResult.gen1_species,
-          ],
+          gen1_species: [...previousResult.gen1_species, ...fetchMoreResult.gen1_species],
         };
       },
     });
@@ -122,7 +129,7 @@ export default function PokedexScreen() {
 
       <View className="flex flex-row justify-center">
         <SearchBar search={searchText} setSearch={setSearchText} />
-        <FilterButton isOpen={isOpen} setIsOpen={setIsOpen} />
+        <FilterButton isOpen={isOpen} setIsOpen={toggleFilterPanel} />
       </View>
 
       {isOpen && (
@@ -130,18 +137,17 @@ export default function PokedexScreen() {
           <Text className="text-xl font-semibold text-red-500">Filter by Type</Text>
           <View className="flex-row flex-wrap gap-2 my-2">
             {POKEMON_TYPES.map((type) => {
-              const isSelected = selectedTypes.includes(type);
+              const isSelected = tempSelectedTypes.includes(type);
 
               return (
                 <TouchableOpacity
                   key={type}
                   onPress={() => {
-                    setSelectedTypes((prev) =>
+                    setTempSelectedTypes((prev) =>
                       isSelected ? prev.filter((t) => t !== type) : [...prev, type]
                     );
                   }}
-                  className={`px-3 py-2 rounded-full border-2 ca ${isSelected ? "bg-red-500 border-black" : "bg-gray-200 border-gray-400"
-                    }`}
+                  className={`px-3 py-2 rounded-full border-2 ${isSelected ? "bg-red-500 border-black" : "bg-gray-200 border-gray-400"}`}
                 >
                   <Text className={`${isSelected ? "text-white" : "text-black"} capitalize`}>{type}</Text>
                 </TouchableOpacity>
@@ -154,17 +160,13 @@ export default function PokedexScreen() {
             {SORT_BY.map((option) => (
               <TouchableOpacity
                 key={option.key}
-                onPress={() => setSortBy(option.key as typeof sortBy)}
-                className={`px-3 py-2 rounded-full border-2 ${sortBy === option.key ? "bg-red-500 border-black" : "bg-gray-200 border-gray-400"
-                  }`}
+                onPress={() => setTempSortBy(option.key as typeof sortBy)}
+                className={`px-3 py-2 rounded-full border-2 ${tempSortBy === option.key ? "bg-red-500 border-black" : "bg-gray-200 border-gray-400"}`}
               >
-                <Text className={sortBy === option.key ? "text-white" : "text-black"}>
-                  {option.label}
-                </Text>
+                <Text className={tempSortBy === option.key ? "text-white" : "text-black"}>{option.label}</Text>
               </TouchableOpacity>
             ))}
           </View>
-
         </View>
       )}
 
@@ -179,3 +181,4 @@ export default function PokedexScreen() {
     </SafeAreaView>
   );
 }
+

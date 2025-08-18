@@ -25,6 +25,7 @@ export default function PokedexList({
       columnWrapperStyle={{ justifyContent: "space-evenly" }}
       contentContainerStyle={{ padding: 8 }}
       keyExtractor={(item, index) => `${item.id}-${index}`}
+      initialNumToRender={10}
       renderItem={({ item }) => (
         <View className="flex items-center mb-8">
           <PokemonCard

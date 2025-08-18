@@ -1,6 +1,5 @@
 import { Href, useRouter } from "expo-router";
 import { Image, Text, TouchableOpacity } from "react-native";
-import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { localClient } from "@/graphql/apolloClient";
 import { ADD_TO_MY_DEX } from "@/graphql/mutations/addToMyDex";

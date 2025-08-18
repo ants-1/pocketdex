@@ -32,6 +32,9 @@ export default function PokedexDetailsScreen() {
   }
 
   const types = pokemon.pokemon_v2_pokemontypes.map((t: any) => t.pokemon_v2_type.name);
+  const abilities = pokemon.pokemon_v2_pokemonabilities.map(
+    (a: any) => a.pokemon_v2_ability.name
+  );
 
   let moves = pokemon.pokemon_v2_pokemonmoves
     .filter((m: any) => m.level > 0)
@@ -52,6 +55,7 @@ export default function PokedexDetailsScreen() {
     return true;
   });
 
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView contentContainerStyle={{ alignItems: "center", padding: 16 }}>
@@ -64,7 +68,15 @@ export default function PokedexDetailsScreen() {
 
         {spriteUrl && <Image source={{ uri: spriteUrl }} className="w-72 h-72 mb-4" />}
         <Text className="text-2xl font-bold capitalize mb-2">{pokemon.name}</Text>
-        <Text className="text-lg text-gray-500 capitalize mb-8">{types.join(" / ")}</Text>
+        
+        <Text className="text-lg underline text-gray-700 capitalize font-semibold">
+          Types:
+        </Text>
+        <Text className="text-lg text-gray-500 capitalize mb-2">{types.join(" / ")}</Text>
+        <Text className="text-xl underline text-gray-700 capitalize font-semibold">
+          Abilities:
+        </Text>
+        <Text className="text-lg text-gray-500 capitalize mb-2 text-wrap">{abilities.join(" / ")}</Text>
 
         <Text className="text-xl font-semibold mb-4 underline">Moves</Text>
         <View className="flex gap-2 w-full">

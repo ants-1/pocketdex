@@ -13,6 +13,11 @@ export const GET_POKEMON_BY_ID = gql`
           name
         }
       }
+      pokemon_v2_pokemonabilities {
+        pokemon_v2_ability {
+          name
+        }
+      }
       pokemon_v2_pokemonmoves {
         level
         pokemon_v2_move {
