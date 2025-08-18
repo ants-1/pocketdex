@@ -1,6 +1,11 @@
 import { TouchableOpacity, Text } from "react-native";
 
-export default function QuestionButton({ option, handleAnswer }: any) {
+interface QuestionButtonProps {
+  option: string;
+  handleAnswer: (option: string) => void;
+}
+
+export const QuestionButton: React.FC<QuestionButtonProps> = ({ option, handleAnswer }) => {
   return (
     <TouchableOpacity
       onPress={() => handleAnswer(option)}

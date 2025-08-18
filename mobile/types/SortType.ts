@@ -1,0 +1,1 @@
+export type SortType = "name-asc" | "name-desc" | "id-asc" | "id-desc";

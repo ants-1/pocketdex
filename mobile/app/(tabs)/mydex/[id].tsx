@@ -27,7 +27,9 @@ export default function MyDexDetailsScreen() {
     const sprites = pokemon.pokemon_v2_pokemonsprites[0].sprites;
     const spriteObj = typeof sprites === "string" ? JSON.parse(sprites) : sprites;
     spriteUrl = spriteObj.other.home.front_default;
-  } catch {}
+  } catch {
+    spriteUrl = "";
+  }
 
   const types = pokemon.pokemon_v2_pokemontypes.map((t: any) => t.pokemon_v2_type.name);
 

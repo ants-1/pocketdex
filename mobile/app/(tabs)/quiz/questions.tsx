@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import { SafeAreaView, Text, ActivityIndicator, View } from "react-native";
 import { useQuery } from "@apollo/client";
-import QuestionButton from "@/components/QuestionButton";
+import { QuestionButton } from "@/components/QuestionButton";
 import { useRouter } from "expo-router";
 import { GET_POKEMON_QUIZ } from "@/graphql/queries/getPokemonQuiz";
 import { POKEMON_TYPES } from "@/constants/pokemonTypes";
+import { Question } from "@/types/QuestionType";
 
 export default function QuizScreen() {
   const router = useRouter();
-  const [questions, setQuestions] = useState<any[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [score, setScore] = useState(0);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
 
   const { loading, error, data } = useQuery(GET_POKEMON_QUIZ, {
     variables: { offset: 0, limit: 151 },
@@ -22,11 +23,11 @@ export default function QuizScreen() {
         .map((p: any) => p.pokemon_v2_pokemons[0])
         .filter(Boolean);
 
-      const quizQuestions = [];
+      const quizQuestions: Question[] = [];
 
       // Pick 5 random Pokemon
       for (let q = 0; q < 5; q++) {
-        const randomIndex = Math.floor(Math.random() * allPokemon.length);
+        const randomIndex: number = Math.floor(Math.random() * allPokemon.length);
         const p = allPokemon[randomIndex];
         const correctType = p.pokemon_v2_pokemontypes[0]?.pokemon_v2_type.name || "unknown";
 
@@ -60,7 +61,7 @@ export default function QuizScreen() {
     }
   }, [loading, data]);
 
-  const currentQuestion = questions[currentIndex];
+  const currentQuestion: Question = questions[currentIndex];
 
   const handleAnswer = (option: string) => {
     const isCorrect = option === currentQuestion.answer;

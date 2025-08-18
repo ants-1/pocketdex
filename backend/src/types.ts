@@ -6,7 +6,6 @@ export interface Pokemon {
 }
 
 export interface AddMyDexInput {
-  id: string;
   name: string;
   pokemonTypes: string[];
   spriteUrl?: string | null;

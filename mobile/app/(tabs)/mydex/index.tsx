@@ -6,17 +6,18 @@ import { SearchBar } from "@/components/SearchBar";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { GET_MY_DEX } from "@/graphql/queries/getMyDex";
 import { localClient } from "@/graphql/apolloClient";
-import FilterButton from "@/components/FilterButton";
+import { FilterButton } from "@/components/FilterButton";
 import { POKEMON_TYPES, PokemonType } from "@/constants/pokemonTypes";
 import { SORT_BY } from "@/constants/sortOptions";
+import { SortType } from "@/types/SortType";
 
 export default function MyDexScreen() {
-  const [searchText, setSearchText] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [searchText, setSearchText] = useState<string>("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedTypes, setSelectedTypes] = useState<PokemonType[]>([]);
-  const [sortBy, setSortBy] = useState<"name-asc" | "name-desc" | "id-asc" | "id-desc">("id-asc");
+  const [sortBy, setSortBy] = useState<SortType>("id-asc");
   const [tempSelectedTypes, setTempSelectedTypes] = useState<string[]>(selectedTypes);
-  const [tempSortBy, setTempSortBy] = useState(sortBy);
+  const [tempSortBy, setTempSortBy] = useState<SortType>(sortBy);
 
   const { data, loading, error, refetch } = useQuery(GET_MY_DEX, { client: localClient });
 
@@ -33,12 +34,6 @@ export default function MyDexScreen() {
   };
 
   if (loading) return <ActivityIndicator className="flex-1" size="large" />;
-  if (error)
-    return (
-      <View className="flex-1 items-center justify-center">
-        <Text>Error: {error.message}</Text>
-      </View>
-    );
 
   const myDex = data?.myDex ?? [];
 
@@ -126,13 +121,20 @@ export default function MyDexScreen() {
         </View>
       )}
 
-      <View className="mb-80">
-        <PokedexList
-          pokemonData={filteredPokemon}
-          isMyDex={true}
-          refetchMyDex={refetch}
-        />
-      </View>
+      {error ? (
+        <View className="flex-1 items-center justify-center">
+          <Text>Error: {error.message}</Text>
+        </View>
+      ) : (
+        <View className="mb-80">
+          <PokedexList
+            pokemonData={filteredPokemon}
+            isMyDex={true}
+            refetchMyDex={refetch}
+          />
+        </View>
+      )}
+
     </SafeAreaView>
   );
 }

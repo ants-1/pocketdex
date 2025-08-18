@@ -1,9 +1,8 @@
 # PocketDex
 
 **PocketDex** is a mobile application built using **React Native**, **GraphQL**, **Apollo**, **TypeScript**, **Node.js**, and **PostgreSQL**. The app allows users to explore Generation One Pokemon, create their own Pokedex and test their Pokemon knowledge.
-- GraphQL API Used: [Pokemon API](https://studio.apollographql.com/public/poke-gql/variant/current/home)
 
----
+- GraphQL API Used: [Pokemon API](https://studio.apollographql.com/public/poke-gql/variant/current/home)
 
 ## Features
 
@@ -11,20 +10,19 @@
 - **Manage Pokemon in Your Favorites** (Create Your Own Pokedex / MyDex).
 - **Take the Pokemon Quiz** to test your knowledge.
 
----
-
 ## Screenshots
-<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_1.PNG" alt="Landing Screen" width="300" />
-<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_2.PNG" alt="Home Screen" width="300" />
-<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_3.PNG" alt="Pokedex Screen" width="300" />
-<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_4.PNG" alt="MyDex Screen" width="300" />
-<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_8.PNG" alt="Pokedex List Filter" width="300" />
-<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_9.PNG" alt="Pokedex Details Screen" width="300" />
-<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_5.PNG" alt="Quiz Start Screen" width="300" />
-<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_6.PNG" alt="Quiz Question Screen" width="300" />
-<img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_7.PNG" alt="Score Screen" width="300" />
 
----
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+  <img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_1.PNG" alt="Landing Screen" width="200" />
+  <img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_2.PNG" alt="Home Screen" width="200" />
+  <img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_3.PNG" alt="Pokedex Screen" width="200" />
+  <img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_4.PNG" alt="MyDex Screen" width="200" />
+  <img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_8.PNG" alt="Pokedex List Filter" width="200" />
+  <img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_9.PNG" alt="Pokedex Details Screen" width="200" />
+  <img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_5.PNG" alt="Quiz Start Screen" width="200" />
+  <img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_6.PNG" alt="Quiz Question Screen" width="200" />
+  <img src="https://github.com/ants-1/pocketdex/blob/470393205f64086568145912f4e611f10569bb66/screenshots/screenshot_7.PNG" alt="Score Screen" width="200" />
+</div>
 
 ## Tech Stack
 

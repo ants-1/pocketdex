@@ -7,17 +7,18 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { GET_GEN_ONE_POKEMON } from "@/graphql/queries/getGenOnePokemon";
 import { GET_MY_DEX } from "@/graphql/queries/getMyDex";
 import { localClient } from "@/graphql/apolloClient";
-import FilterButton from "@/components/FilterButton";
+import { FilterButton } from "@/components/FilterButton";
 import { POKEMON_TYPES, PokemonType } from "@/constants/pokemonTypes";
 import { SORT_BY, sortMapping } from "@/constants/sortOptions";
+import { SortType } from "@/types/SortType";
 
 export default function PokedexScreen() {
-  const [searchText, setSearchText] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [searchText, setSearchText] = useState<string>("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedTypes, setSelectedTypes] = useState<PokemonType[]>([]);
-  const [sortBy, setSortBy] = useState<"name-asc" | "name-desc" | "id-asc" | "id-desc">("id-asc");
+  const [sortBy, setSortBy] = useState<SortType>("id-asc");
   const [tempSelectedTypes, setTempSelectedTypes] = useState<string[]>(selectedTypes);
-  const [tempSortBy, setTempSortBy] = useState(sortBy);
+  const [tempSortBy, setTempSortBy] = useState<SortType>(sortBy);
 
   const { data: pokeDexData, loading, error, fetchMore, refetch } = useQuery(GET_GEN_ONE_POKEMON, {
     variables: {
