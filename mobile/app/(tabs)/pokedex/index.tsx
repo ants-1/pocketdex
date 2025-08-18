@@ -10,9 +10,16 @@ import { localClient } from "@/graphql/apolloClient";
 import FilterButton from "@/components/FilterButton";
 
 const POKEMON_TYPES = [
-  "normal","fighting","flying","poison","ground","rock","bug","ghost",
-  "steel","fire","water","grass","electric","psychic","ice","dragon",
-  "dark","fairy","stellar","unknown","shadow"
+  "normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost",
+  "steel", "fire", "water", "grass", "electric", "psychic", "ice", "dragon",
+  "dark", "fairy", "stellar", "unknown", "shadow"
+];
+
+const SORT_BY = [
+  { key: "name-asc", label: "Name (A-Z)" },
+  { key: "name-desc", label: "Name (Z-A)" },
+  { key: "id-asc", label: "Dex No (1-151)" },
+  { key: "id-desc", label: "Dex No (151-1)" },
 ];
 
 export default function PokedexScreen() {
@@ -27,7 +34,8 @@ export default function PokedexScreen() {
 
   const [searchText, setSearchText] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState<"name-asc" | "name-desc" | "id-asc" | "id-desc">("id-asc");
 
   if (loading && !data) return <ActivityIndicator className="flex-1" size="large" />;
   if (error)
@@ -71,8 +79,24 @@ export default function PokedexScreen() {
       pokemon.name.toLowerCase().includes(searchText.toLowerCase())
     )
     .filter((pokemon: any) =>
-      selectedType ? pokemon.pokemonTypes.includes(selectedType) : true
-    );
+      selectedTypes.length > 0
+        ? selectedTypes.some((t) => pokemon.pokemonTypes.includes(t))
+        : true
+    )
+    .sort((a: any, b: any) => {
+      switch (sortBy) {
+        case "name-asc":
+          return a.name.localeCompare(b.name);
+        case "name-desc":
+          return b.name.localeCompare(a.name);
+        case "id-asc":
+          return Number(a.id) - Number(b.id);
+        case "id-desc":
+          return Number(b.id) - Number(a.id);
+        default:
+          return Number(a.id) - Number(b.id);
+      }
+    });
 
   const handleLoadMore = () => {
     fetchMore({
@@ -105,18 +129,42 @@ export default function PokedexScreen() {
         <View className="h-full px-12">
           <Text className="text-xl font-semibold text-red-500">Filter by Type</Text>
           <View className="flex-row flex-wrap gap-2 my-2">
-            {POKEMON_TYPES.map((type) => (
+            {POKEMON_TYPES.map((type) => {
+              const isSelected = selectedTypes.includes(type);
+
+              return (
+                <TouchableOpacity
+                  key={type}
+                  onPress={() => {
+                    setSelectedTypes((prev) =>
+                      isSelected ? prev.filter((t) => t !== type) : [...prev, type]
+                    );
+                  }}
+                  className={`px-3 py-2 rounded-full border-2 ca ${isSelected ? "bg-red-500 border-black" : "bg-gray-200 border-gray-400"
+                    }`}
+                >
+                  <Text className={`${isSelected ? "text-white" : "text-black"} capitalize`}>{type}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          <Text className="text-xl font-semibold text-red-500 mt-4">Sort by</Text>
+          <View className="flex-row flex-wrap gap-2 my-2">
+            {SORT_BY.map((option) => (
               <TouchableOpacity
-                key={type}
-                onPress={() => setSelectedType(type === selectedType ? null : type)}
-                className={`px-3 py-2 rounded-full border-2 ${selectedType === type ? "bg-red-500 border-black" : "bg-gray-200 border-gray-400"}`}
+                key={option.key}
+                onPress={() => setSortBy(option.key as typeof sortBy)}
+                className={`px-3 py-2 rounded-full border-2 ${sortBy === option.key ? "bg-red-500 border-black" : "bg-gray-200 border-gray-400"
+                  }`}
               >
-                <Text className={`${selectedType === type ? "text-white" : "text-black"} capitalize`}>
-                  {type}
+                <Text className={sortBy === option.key ? "text-white" : "text-black"}>
+                  {option.label}
                 </Text>
               </TouchableOpacity>
             ))}
           </View>
+
         </View>
       )}
 
@@ -125,7 +173,7 @@ export default function PokedexScreen() {
           pokemonData={filteredPokemon}
           onLoadMore={handleLoadMore}
           isMyDex={false}
-          refetchMyDex={refetchMyDex} 
+          refetchMyDex={refetchMyDex}
         />
       </View>
     </SafeAreaView>
